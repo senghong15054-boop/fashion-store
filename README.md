@@ -102,6 +102,7 @@ Frontend runs on `http://localhost:5173`.
 2. Set environment variables from [`frontend/.env.example`](C:\Users\langv\Documents\New project\frontend\.env.example).
 3. Build command: `npm run build`
 4. Output directory: `dist`
+5. The included [`vercel.json`](C:\Users\langv\Documents\New project\frontend\vercel.json) keeps React routes working on refresh.
 
 ### Backend to Render or Railway
 
@@ -109,6 +110,7 @@ Frontend runs on `http://localhost:5173`.
 2. Set environment variables from [`backend/.env.example`](C:\Users\langv\Documents\New project\backend\.env.example).
 3. Start command: `npm start`
 4. Add a persistent disk if you want uploaded screenshots stored beyond deploys. Otherwise use external object storage.
+5. A starter [`render.yaml`](C:\Users\langv\Documents\New project\render.yaml) is included for Render deployment.
 
 ### Database
 
@@ -121,6 +123,18 @@ Frontend runs on `http://localhost:5173`.
 - KHQR verification is manual through the admin dashboard.
 - Email notification is left optional and not wired to an SMTP provider in this scaffold.
 - For production, add rate limiting, stricter image storage, HTTPS-only cookies if moving auth to cookies, and server-side coupon management.
+- Update [`frontend/public/robots.txt`](C:\Users\langv\Documents\New project\frontend\public\robots.txt) and [`frontend/public/sitemap.xml`](C:\Users\langv\Documents\New project\frontend\public\sitemap.xml) with your final live domain before asking Google to index the site.
+
+## Google Indexing
+
+1. Deploy the frontend to its final public URL.
+2. Replace `https://your-frontend-domain.vercel.app` in:
+   - [`frontend/.env.example`](C:\Users\langv\Documents\New project\frontend\.env.example)
+   - [`frontend/public/robots.txt`](C:\Users\langv\Documents\New project\frontend\public\robots.txt)
+   - [`frontend/public/sitemap.xml`](C:\Users\langv\Documents\New project\frontend\public\sitemap.xml)
+3. In Google Search Console, add your final site URL as a property.
+4. Submit `/sitemap.xml`.
+5. Request indexing for the home page and key pages like `/shop` and `/contact`.
 
 ## Ready files
 
