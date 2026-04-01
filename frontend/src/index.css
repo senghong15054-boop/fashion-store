@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-sand text-ink font-body transition-colors duration-300 dark:bg-ink dark:text-white;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.glass-panel {
+  @apply border border-white/40 bg-white/70 backdrop-blur-xl dark:border-white/10 dark:bg-white/5;
+}
+
+.section-shell {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-ember dark:bg-ember dark:hover:bg-white dark:hover:text-ink;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-full border border-ink/15 px-6 py-3 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-ember hover:text-ember dark:border-white/15 dark:hover:border-ember;
+}
+
+.input-field {
+  @apply w-full rounded-2xl border border-black/10 bg-white/80 px-4 py-3 text-sm outline-none transition focus:border-ember focus:ring-2 focus:ring-ember/20 dark:border-white/10 dark:bg-white/5;
+}
+
+.card-grid {
+  @apply grid gap-6 sm:grid-cols-2 lg:grid-cols-3;
+}
