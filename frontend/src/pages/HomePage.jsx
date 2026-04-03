@@ -6,6 +6,7 @@ import SEO from "../components/SEO";
 import ProductCard from "../components/ProductCard";
 import LoadingBlock from "../components/LoadingBlock";
 import { apiFetch } from "../utils/api";
+import { useLanguage } from "../context/LanguageContext";
 
 const perks = [
   { title: "Premium quality", icon: Sparkles, text: "Heavyweight cotton, elevated cuts, and clean finishing." },
@@ -14,6 +15,7 @@ const perks = [
 ];
 
 export default function HomePage() {
+  const { t } = useLanguage();
   const [featured, setFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,19 +33,19 @@ export default function HomePage() {
           <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
             <motion.div initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="space-y-8">
               <span className="inline-flex rounded-full border border-ember/20 bg-ember/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.25em] text-ember">
-                New season essentials
+                {t.home.badge}
               </span>
               <div className="space-y-5">
                 <h1 className="max-w-2xl font-display text-5xl font-extrabold leading-none sm:text-6xl">
-                  Premium T-shirts with fashion Hong store.
+                  {t.home.title}
                 </h1>
                 <p className="max-w-xl text-lg text-black/65 dark:text-white/65">
-                  A polished e-commerce experience with refined product storytelling, KHQR checkout, and an admin system that keeps operations under control.
+                  {t.home.description}
                 </p>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Link to="/shop" className="btn-primary">Shop collection <ArrowRight className="ml-2" size={16} /></Link>
-                <Link to="/contact" className="btn-secondary">Contact the team</Link>
+                <Link to="/shop" className="btn-primary">{t.home.shopCollection} <ArrowRight className="ml-2" size={16} /></Link>
+                <Link to="/contact" className="btn-secondary">{t.home.contactTeam}</Link>
               </div>
               <div className="grid gap-4 sm:grid-cols-3">
                 {perks.map((perk) => (
@@ -61,9 +63,9 @@ export default function HomePage() {
               </div>
               <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }} className="glass-panel absolute bottom-10 right-0 max-w-xs rounded-[1.75rem] p-5">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-ember">Studio pick</p>
-                <h3 className="mt-2 font-display text-2xl font-bold">Made to feel expensive.</h3>
+                <h3 className="mt-2 font-display text-2xl font-bold">{t.home.studioTitle}</h3>
                 <p className="mt-2 text-sm text-black/65 dark:text-white/65">
-                  Product pages, cart flow, and admin operations are built to feel deliberate, not generic.
+                  {t.home.studioDescription}
                 </p>
               </motion.div>
             </motion.div>
@@ -75,12 +77,12 @@ export default function HomePage() {
         <div className="section-shell space-y-8">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-ember">Featured products</p>
-              <h2 className="mt-2 font-display text-4xl font-bold">Designed for a premium first impression.</h2>
+              <p className="text-sm uppercase tracking-[0.3em] text-ember">{t.home.featuredLabel}</p>
+              <h2 className="mt-2 font-display text-4xl font-bold">{t.home.featuredTitle}</h2>
             </div>
-            <Link to="/shop" className="btn-secondary">View all</Link>
+            <Link to="/shop" className="btn-secondary">{t.home.viewAll}</Link>
           </div>
-          {loading ? <LoadingBlock label="Loading featured products..." /> : null}
+          {loading ? <LoadingBlock label={t.common.loading} /> : null}
           <div className="card-grid">
             {featured.map((product, index) => <ProductCard key={product.id} product={product} delay={index * 0.1} />)}
           </div>

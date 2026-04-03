@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { adminLogin } from "../controllers/adminController.js";
+import { adminLogin, customerLogin, customerRegister } from "../controllers/adminController.js";
 import { addProduct, deleteProduct, updateProduct } from "../controllers/productController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { productUpload } from "../middleware/uploadMiddleware.js";
@@ -21,6 +21,21 @@ router.post(
   "/admin/login",
   [body("username").trim().notEmpty(), body("password").trim().notEmpty()],
   adminLogin
+);
+router.post(
+  "/auth/register",
+  [
+    body("fullName").trim().notEmpty(),
+    body("username").trim().isLength({ min: 3 }),
+    body("email").isEmail(),
+    body("password").isLength({ min: 6 })
+  ],
+  customerRegister
+);
+router.post(
+  "/auth/login",
+  [body("email").isEmail(), body("password").trim().notEmpty()],
+  customerLogin
 );
 router.post("/admin/product/add", authMiddleware, productUpload, productValidators, addProduct);
 router.put("/admin/product/:id", authMiddleware, productUpload, productValidators, updateProduct);

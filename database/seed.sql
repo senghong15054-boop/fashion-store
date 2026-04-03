@@ -1,12 +1,12 @@
 USE tshirt_store;
 
-INSERT INTO users (username, password)
+INSERT INTO users (username, full_name, email, password, role)
 VALUES
-('admin', '$2a$10$qOT.sXfo5WSz2OIpzwdrge.v0ea7prdXKKC9AS9qI2zC45UeFi/QC')
-ON DUPLICATE KEY UPDATE username = VALUES(username), password = VALUES(password);
+('admin', 'Store Admin', 'admin@premiumtee.local', '$2a$10$qOT.sXfo5WSz2OIpzwdrge.v0ea7prdXKKC9AS9qI2zC45UeFi/QC', 'admin')
+ON DUPLICATE KEY UPDATE username = VALUES(username), full_name = VALUES(full_name), email = VALUES(email), password = VALUES(password), role = VALUES(role);
 
 INSERT INTO products
-(name, slug, price, compare_price, image, gallery, sizes, stock, sale, category, badge, short_description, description, is_featured)
+(name, slug, price, compare_price, image, gallery, colors, sizes, stock, sale, category, badge, short_description, description, is_featured)
 VALUES
 (
   'Monochrome Essential Tee',
@@ -18,6 +18,7 @@ VALUES
     'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80',
     'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=900&q=80'
   ),
+  JSON_ARRAY('Black','White','Grey'),
   JSON_ARRAY('S','M','L','XL'),
   40,
   1,
@@ -37,6 +38,7 @@ VALUES
     'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=900&q=80',
     'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=80'
   ),
+  JSON_ARRAY('Black','Cream'),
   JSON_ARRAY('M','L','XL'),
   25,
   0,
@@ -56,6 +58,7 @@ VALUES
     'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80',
     'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80'
   ),
+  JSON_ARRAY('Black','Blue','Red'),
   JSON_ARRAY('S','M','L'),
   18,
   1,

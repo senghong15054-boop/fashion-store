@@ -4,19 +4,29 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../context/ThemeContext";
 import { useCart } from "../context/CartContext";
-
-const links = [
-  { to: "/", label: "Home" },
-  { to: "/shop", label: "Shop" },
-  { to: "/contact", label: "Contact" },
-  { to: "/admin", label: "Admin" }
-];
+import { useCustomer } from "../context/CustomerContext";
+import { useAdmin } from "../context/AdminContext";
+import { useLanguage } from "../context/LanguageContext";
+import LanguageToggle from "./LanguageToggle";
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { cart } = useCart();
+  const { customer } = useCustomer();
+  const { admin } = useAdmin();
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const links = [
+    { to: "/", label: t.nav.home },
+    { to: "/shop", label: t.nav.shop },
+    { to: "/contact", label: t.nav.contact },
+    { to: "/account", label: customer ? t.nav.account : t.nav.register }
+  ];
+
+  if (admin) {
+    links.push({ to: "/admin/dashboard", label: t.nav.admin });
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -51,6 +61,7 @@ export default function Navbar() {
           ))}
         </nav>
         <div className="flex items-center gap-3">
+          <LanguageToggle />
           <button
             type="button"
             onClick={toggleTheme}
@@ -65,9 +76,11 @@ export default function Navbar() {
               {cart.length}
             </span>
           </Link>
-          <Link to="/admin" className="hidden rounded-full border border-black/10 p-2 dark:border-white/10 md:block">
-            <User size={18} />
-          </Link>
+          {admin ? (
+            <Link to="/admin/dashboard" className="hidden rounded-full border border-black/10 p-2 dark:border-white/10 md:block">
+              <User size={18} />
+            </Link>
+          ) : null}
           <button
             type="button"
             onClick={() => setOpen((prev) => !prev)}

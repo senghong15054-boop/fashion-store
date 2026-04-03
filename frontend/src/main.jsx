@@ -7,18 +7,24 @@ import "./index.css";
 import { ThemeProvider } from "./context/ThemeContext";
 import { CartProvider } from "./context/CartContext";
 import { AdminProvider } from "./context/AdminContext";
+import { CustomerProvider } from "./context/CustomerContext";
+import { LanguageProvider } from "./context/LanguageContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <HelmetProvider>
       <BrowserRouter>
-        <ThemeProvider>
-          <AdminProvider>
-            <CartProvider>
-              <App />
-            </CartProvider>
-          </AdminProvider>
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            <AdminProvider>
+              <CustomerProvider>
+                <CartProvider>
+                  <App />
+                </CartProvider>
+              </CustomerProvider>
+            </AdminProvider>
+          </ThemeProvider>
+        </LanguageProvider>
       </BrowserRouter>
     </HelmetProvider>
   </React.StrictMode>

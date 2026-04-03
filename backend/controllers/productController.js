@@ -39,6 +39,7 @@ export const getProducts = async (req, res) => {
 
     const [items] = await pool.query(
       `SELECT id, name, slug, price, compare_price, image, gallery, sizes, stock, sale, category, badge, short_description, description, is_featured
+       , colors
        FROM products
        ${whereClause}
        ORDER BY id DESC
@@ -55,6 +56,7 @@ export const getProducts = async (req, res) => {
       items: items.map((item) => ({
         ...item,
         gallery: JSON.parse(item.gallery || "[]"),
+        colors: JSON.parse(item.colors || "[]"),
         sizes: JSON.parse(item.sizes || "[]")
       })),
       total: countResult[0].total,
@@ -70,6 +72,7 @@ export const getProductById = async (req, res) => {
   try {
     const [rows] = await pool.query(
       `SELECT id, name, slug, price, compare_price, image, gallery, sizes, stock, sale, category, badge, short_description, description, is_featured
+       , colors
        FROM products
        WHERE id = ?`,
       [req.params.id]
@@ -84,6 +87,7 @@ export const getProductById = async (req, res) => {
     return res.json({
       ...product,
       gallery: JSON.parse(product.gallery || "[]"),
+      colors: JSON.parse(product.colors || "[]"),
       sizes: JSON.parse(product.sizes || "[]")
     });
   } catch (error) {
@@ -104,6 +108,7 @@ export const addProduct = async (req, res) => {
       slug,
       price,
       comparePrice,
+      colors,
       sizes,
       stock,
       sale,
@@ -129,8 +134,8 @@ export const addProduct = async (req, res) => {
 
     const [result] = await pool.query(
       `INSERT INTO products
-      (name, slug, price, compare_price, image, gallery, sizes, stock, sale, category, badge, short_description, description, is_featured)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (name, slug, price, compare_price, image, gallery, colors, sizes, stock, sale, category, badge, short_description, description, is_featured)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
         slug,
@@ -138,6 +143,7 @@ export const addProduct = async (req, res) => {
         Number(comparePrice || 0),
         imagePath,
         JSON.stringify(galleryPaths),
+        JSON.stringify(normalizeArray(colors)),
         JSON.stringify(normalizeArray(sizes)),
         Number(stock),
         parseBoolean(sale) ? 1 : 0,
@@ -168,6 +174,7 @@ export const updateProduct = async (req, res) => {
       slug,
       price,
       comparePrice,
+      colors,
       sizes,
       stock,
       sale,
@@ -189,7 +196,7 @@ export const updateProduct = async (req, res) => {
 
     await pool.query(
       `UPDATE products
-       SET name = ?, slug = ?, price = ?, compare_price = ?, image = ?, gallery = ?, sizes = ?, stock = ?, sale = ?, category = ?, badge = ?, short_description = ?, description = ?, is_featured = ?
+       SET name = ?, slug = ?, price = ?, compare_price = ?, image = ?, gallery = ?, colors = ?, sizes = ?, stock = ?, sale = ?, category = ?, badge = ?, short_description = ?, description = ?, is_featured = ?
        WHERE id = ?`,
       [
         name,
@@ -198,6 +205,7 @@ export const updateProduct = async (req, res) => {
         Number(comparePrice || 0),
         imagePath,
         JSON.stringify(galleryPaths),
+        JSON.stringify(normalizeArray(colors)),
         JSON.stringify(normalizeArray(sizes)),
         Number(stock),
         parseBoolean(sale) ? 1 : 0,

@@ -8,6 +8,7 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ContactPage from "./pages/ContactPage";
+import AccountPage from "./pages/AccountPage";
 import AdminLoginPage from "./admin/AdminLoginPage";
 import AdminDashboardPage from "./admin/AdminDashboardPage";
 import AdminRoute from "./components/AdminRoute";
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/success" element={<OrderSuccessPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/account" element={<AccountPage />} />
           <Route path="/admin" element={<AdminLoginPage />} />
           <Route
             path="/admin/dashboard"

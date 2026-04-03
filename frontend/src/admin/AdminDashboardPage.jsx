@@ -11,6 +11,7 @@ const initialForm = {
   slug: "",
   price: "",
   comparePrice: "",
+  colors: "Black,White",
   sizes: "S,M,L,XL",
   stock: "10",
   sale: true,
@@ -158,6 +159,7 @@ export default function AdminDashboardPage() {
       slug: product.slug || "",
       price: product.price || "",
       comparePrice: product.compare_price || "",
+      colors: Array.isArray(product.colors) ? product.colors.join(",") : "Black,White",
       sizes: Array.isArray(product.sizes) ? product.sizes.join(",") : "S,M,L,XL",
       stock: product.stock || "0",
       sale: Boolean(product.sale),
@@ -218,6 +220,7 @@ export default function AdminDashboardPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <input className="input-field" placeholder="Price" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
               <input className="input-field" placeholder="Compare price" value={form.comparePrice} onChange={(e) => setForm({ ...form, comparePrice: e.target.value })} />
+              <input className="input-field" placeholder="Colors comma separated" value={form.colors} onChange={(e) => setForm({ ...form, colors: e.target.value })} />
               <input className="input-field" placeholder="Sizes comma separated" value={form.sizes} onChange={(e) => setForm({ ...form, sizes: e.target.value })} />
               <input className="input-field" placeholder="Stock" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
             </div>

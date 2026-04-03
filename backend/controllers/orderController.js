@@ -1,5 +1,6 @@
 import pool from "../config/db.js";
 import { validationResult } from "express-validator";
+import { sendTelegramOrderNotification } from "../services/telegramService.js";
 
 export const createOrder = async (req, res) => {
   const errors = validationResult(req);
@@ -33,6 +34,7 @@ export const createOrder = async (req, res) => {
     }
 
     const screenshotPath = req.file ? `/uploads/${req.file.filename}` : null;
+    const notificationItems = [];
 
     if (!screenshotPath) {
       throw new Error("Payment screenshot is required");
@@ -57,10 +59,15 @@ export const createOrder = async (req, res) => {
     );
 
     for (const item of items) {
+      const [[product]] = await connection.query(
+        "SELECT name FROM products WHERE id = ?",
+        [item.productId]
+      );
+
       await connection.query(
-        `INSERT INTO order_items (order_id, product_id, size, qty, price)
-         VALUES (?, ?, ?, ?, ?)`,
-        [orderResult.insertId, item.productId, item.size, Number(item.qty), Number(item.price)]
+        `INSERT INTO order_items (order_id, product_id, color, size, qty, price)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [orderResult.insertId, item.productId, item.color, item.size, Number(item.qty), Number(item.price)]
       );
 
       const [stockUpdate] = await connection.query(
@@ -71,9 +78,30 @@ export const createOrder = async (req, res) => {
       if (stockUpdate.affectedRows === 0) {
         throw new Error("One or more products are out of stock");
       }
+
+      notificationItems.push({
+        name: product?.name || `Product ${item.productId}`,
+        color: item.color,
+        qty: Number(item.qty),
+        size: item.size
+      });
     }
 
     await connection.commit();
+
+    sendTelegramOrderNotification({
+      id: orderResult.insertId,
+      customerName,
+      phone,
+      address,
+      note,
+      couponCode,
+      total,
+      paymentScreenshot: screenshotPath,
+      items: notificationItems
+    }).catch((error) => {
+      console.error(error.message);
+    });
 
     return res.status(201).json({
       message: "Order placed successfully",
@@ -96,7 +124,7 @@ export const getOrders = async (_req, res) => {
     );
 
     const [items] = await pool.query(
-      `SELECT oi.order_id, oi.product_id, oi.size, oi.qty, oi.price, p.name, p.image
+      `SELECT oi.order_id, oi.product_id, oi.color, oi.size, oi.qty, oi.price, p.name, p.image
        FROM order_items oi
        INNER JOIN products p ON p.id = oi.product_id
        ORDER BY oi.order_id DESC, oi.id ASC`

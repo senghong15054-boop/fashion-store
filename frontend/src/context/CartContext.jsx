@@ -10,9 +10,9 @@ export function CartProvider({ children }) {
     localStorage.setItem("premium-cart", JSON.stringify(next));
   };
 
-  const addToCart = (product, size, qty = 1) => {
+  const addToCart = (product, color, size, qty = 1) => {
     const next = [...cart];
-    const index = next.findIndex((item) => item.id === product.id && item.size === size);
+    const index = next.findIndex((item) => item.id === product.id && item.size === size && item.color === color);
 
     if (index >= 0) {
       next[index].qty += qty;
@@ -22,6 +22,7 @@ export function CartProvider({ children }) {
         name: product.name,
         price: product.price,
         image: product.image,
+        color,
         size,
         qty
       });
@@ -30,14 +31,14 @@ export function CartProvider({ children }) {
     persist(next);
   };
 
-  const updateQty = (id, size, qty) => {
+  const updateQty = (id, color, size, qty) => {
     if (qty <= 0) {
-      return removeItem(id, size);
+      return removeItem(id, color, size);
     }
-    persist(cart.map((item) => (item.id === id && item.size === size ? { ...item, qty } : item)));
+    persist(cart.map((item) => (item.id === id && item.size === size && item.color === color ? { ...item, qty } : item)));
   };
 
-  const removeItem = (id, size) => persist(cart.filter((item) => !(item.id === id && item.size === size)));
+  const removeItem = (id, color, size) => persist(cart.filter((item) => !(item.id === id && item.size === size && item.color === color)));
   const clearCart = () => persist([]);
 
   const value = useMemo(() => {

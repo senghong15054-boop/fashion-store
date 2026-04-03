@@ -4,7 +4,10 @@ USE tshirt_store;
 CREATE TABLE IF NOT EXISTS users (
   id INT PRIMARY KEY AUTO_INCREMENT,
   username VARCHAR(50) NOT NULL UNIQUE,
+  full_name VARCHAR(120) NULL,
+  email VARCHAR(120) NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
+  role ENUM('admin','customer') NOT NULL DEFAULT 'customer',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -16,6 +19,7 @@ CREATE TABLE IF NOT EXISTS products (
   compare_price DECIMAL(10,2) DEFAULT 0,
   image VARCHAR(255) NOT NULL,
   gallery JSON NULL,
+  colors JSON NULL,
   sizes JSON NOT NULL,
   stock INT NOT NULL DEFAULT 0,
   sale TINYINT(1) NOT NULL DEFAULT 0,
@@ -47,6 +51,7 @@ CREATE TABLE IF NOT EXISTS order_items (
   id INT PRIMARY KEY AUTO_INCREMENT,
   order_id INT NOT NULL,
   product_id INT NOT NULL,
+  color VARCHAR(40) NOT NULL,
   size VARCHAR(10) NOT NULL,
   qty INT NOT NULL,
   price DECIMAL(10,2) NOT NULL,

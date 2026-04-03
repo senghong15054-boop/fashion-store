@@ -122,6 +122,7 @@ Frontend runs on `http://localhost:5173`.
 - `payment_screenshot` is uploaded to `backend/uploads`.
 - KHQR verification is manual through the admin dashboard.
 - Email notification is left optional and not wired to an SMTP provider in this scaffold.
+- Telegram notification is supported through `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in the backend env.
 - For production, add rate limiting, stricter image storage, HTTPS-only cookies if moving auth to cookies, and server-side coupon management.
 - Update [`frontend/public/robots.txt`](C:\Users\langv\Documents\New project\frontend\public\robots.txt) and [`frontend/public/sitemap.xml`](C:\Users\langv\Documents\New project\frontend\public\sitemap.xml) with your final live domain before asking Google to index the site.
 
