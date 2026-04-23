@@ -4,6 +4,7 @@ import SEO from "../components/SEO";
 import { useCart } from "../context/CartContext";
 import { currency } from "../utils/format";
 import { useLanguage } from "../context/LanguageContext";
+import { apiFetch } from "../utils/api";
 
 const coupons = {
   SAVE10: 0.1,
@@ -53,12 +54,10 @@ export default function CheckoutPage() {
     if (file) payload.append("paymentScreenshot", file);
 
     try {
-      const result = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/order`, {
+      const data = await apiFetch("/order", {
         method: "POST",
         body: payload
       });
-      const data = await result.json();
-      if (!result.ok) throw new Error(data.message || "Checkout failed");
       clearCart();
       navigate(`/success?orderId=${data.orderId}`);
     } catch (error) {

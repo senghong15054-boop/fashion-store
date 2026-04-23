@@ -3,7 +3,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
 import { useAdmin } from "../context/AdminContext";
-import { apiFetch, buildAssetUrl, API_URL } from "../utils/api";
+import { apiFetch, buildAssetUrl } from "../utils/api";
 import { currency } from "../utils/format";
 
 const initialForm = {
@@ -82,24 +82,17 @@ export default function AdminDashboardPage() {
     if (image) payload.append("image", image);
     galleryFiles.forEach((file) => payload.append("gallery", file));
 
-    const endpoint = editingId
-      ? `${API_URL}/admin/product/${editingId}`
-      : `${API_URL}/admin/product/add`;
-
-    const response = await fetch(endpoint, {
-      method: editingId ? "PUT" : "POST",
-      headers,
-      body: payload
-    });
-    const data = await response.json();
-    if (response.status === 401) {
-      return handleAuthFailure(data.message || "Your admin session expired. Please log in again.");
-    }
-    if (!response.ok) {
-      const validationMessage = Array.isArray(data.errors)
-        ? data.errors.map((item) => item.msg).join(", ")
-        : null;
-      return alert(validationMessage || data.message || "Unable to save product");
+    try {
+      await apiFetch(editingId ? `/admin/product/${editingId}` : "/admin/product/add", {
+        method: editingId ? "PUT" : "POST",
+        headers,
+        body: payload
+      });
+    } catch (error) {
+      if (String(error.message).toLowerCase().includes("unauthorized") || String(error.message).toLowerCase().includes("invalid token")) {
+        return handleAuthFailure();
+      }
+      return alert(error.message || "Unable to save product");
     }
     setForm(initialForm);
     setImage(null);
@@ -137,13 +130,13 @@ export default function AdminDashboardPage() {
 
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
-    const response = await fetch(`${API_URL}/admin/product/${id}`, { method: "DELETE", headers });
-    const data = await response.json().catch(() => ({}));
-    if (response.status === 401) {
-      return handleAuthFailure(data.message || "Your admin session expired. Please log in again.");
-    }
-    if (!response.ok) {
-      return alert(data.message || "Unable to delete product");
+    try {
+      await apiFetch(`/admin/product/${id}`, { method: "DELETE", headers });
+    } catch (error) {
+      if (String(error.message).toLowerCase().includes("unauthorized") || String(error.message).toLowerCase().includes("invalid token")) {
+        return handleAuthFailure();
+      }
+      return alert(error.message || "Unable to delete product");
     }
     load();
   };

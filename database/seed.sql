@@ -1,4 +1,5 @@
-USE tshirt_store;
+USE railway;
+
 
 INSERT INTO users (username, full_name, email, password, role)
 VALUES

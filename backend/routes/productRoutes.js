@@ -3,6 +3,7 @@ import { body } from "express-validator";
 import {
   addProduct,
   deleteProduct,
+  getLatestProduct,
   getProductById,
   getProducts,
   updateProduct
@@ -23,6 +24,7 @@ const productValidators = [
 ];
 
 router.get("/", getProducts);
+router.get("/latest", getLatestProduct);
 router.get("/:id", getProductById);
 router.post("/admin/product/add", authMiddleware, upload.single("image"), productValidators, addProduct);
 router.put("/admin/product/:id", authMiddleware, upload.single("image"), productValidators, updateProduct);

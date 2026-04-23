@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import SEO from "../components/SEO";
 import ProductCard from "../components/ProductCard";
 import LoadingBlock from "../components/LoadingBlock";
-import { apiFetch } from "../utils/api";
+import { apiClient } from "../utils/api";
 import { useLanguage } from "../context/LanguageContext";
 
 const categories = ["Essentials", "Graphics", "Sport"];
@@ -25,10 +25,10 @@ export default function ShopPage() {
       category: category === "All" ? "" : category
     }).toString();
 
-    apiFetch(`/products?${query}`)
-      .then((data) => {
-        setProducts(data.items);
-        setPages(data.pages || 1);
+    apiClient.get(`/products?${query}`)
+      .then((response) => {
+        setProducts(response.data.items);
+        setPages(response.data.pages || 1);
       })
       .finally(() => setLoading(false));
   }, [search, category, page]);

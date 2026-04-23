@@ -68,6 +68,33 @@ export const getProducts = async (req, res) => {
   }
 };
 
+export const getLatestProduct = async (_req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT id, name, slug, price, compare_price, image, gallery, sizes, stock, sale, category, badge, short_description, description, is_featured
+       , colors
+       FROM products
+       ORDER BY id DESC
+       LIMIT 1`
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ message: "No products found" });
+    }
+
+    const product = rows[0];
+
+    return res.json({
+      ...product,
+      gallery: JSON.parse(product.gallery || "[]"),
+      colors: JSON.parse(product.colors || "[]"),
+      sizes: JSON.parse(product.sizes || "[]")
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to load latest product" });
+  }
+};
+
 export const getProductById = async (req, res) => {
   try {
     const [rows] = await pool.query(

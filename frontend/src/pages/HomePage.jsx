@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import SEO from "../components/SEO";
 import ProductCard from "../components/ProductCard";
 import LoadingBlock from "../components/LoadingBlock";
-import { apiFetch } from "../utils/api";
+import { apiClient, apiFetch, buildAssetUrl } from "../utils/api";
+import { currency } from "../utils/format";
 import { useLanguage } from "../context/LanguageContext";
 
 const perks = [
@@ -17,12 +18,22 @@ const perks = [
 export default function HomePage() {
   const { t } = useLanguage();
   const [featured, setFeatured] = useState([]);
+  const [latestProduct, setLatestProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [latestLoading, setLatestLoading] = useState(true);
 
   useEffect(() => {
     apiFetch("/products?limit=6")
       .then((data) => setFeatured(data.items.filter((item) => item.is_featured).slice(0, 3)))
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    apiClient
+      .get(`${import.meta.env.VITE_API_URL}/products/latest`)
+      .then((response) => setLatestProduct(response.data))
+      .catch(() => setLatestProduct(null))
+      .finally(() => setLatestLoading(false));
   }, []);
 
   return (
@@ -85,6 +96,42 @@ export default function HomePage() {
           {loading ? <LoadingBlock label={t.common.loading} /> : null}
           <div className="card-grid">
             {featured.map((product, index) => <ProductCard key={product.id} product={product} delay={index * 0.1} />)}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-8">
+        <div className="section-shell">
+          <div className="glass-panel rounded-[2rem] p-6">
+            <p className="text-sm uppercase tracking-[0.25em] text-ember">Latest Product</p>
+            <h2 className="mt-2 font-display text-3xl font-bold">Fresh from the catalog</h2>
+            {latestLoading ? (
+              <div className="mt-6">
+                <LoadingBlock label="Loading product..." />
+              </div>
+            ) : null}
+            {!latestLoading && !latestProduct ? (
+              <div className="mt-6 text-sm text-black/60 dark:text-white/60">Error loading product</div>
+            ) : null}
+            {latestProduct ? (
+              <div className="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
+                <img
+                  src={buildAssetUrl(latestProduct.image)}
+                  alt={latestProduct.name}
+                  className="h-72 w-full rounded-[1.5rem] object-cover"
+                />
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-display text-3xl font-bold">{latestProduct.name}</h3>
+                    <p className="mt-2 text-2xl font-bold text-emerald-600">{currency(latestProduct.price)}</p>
+                  </div>
+                  <p className="text-black/65 dark:text-white/65">{latestProduct.description}</p>
+                  <Link to={`/product/${latestProduct.id}`} className="btn-primary inline-flex">
+                    View Product
+                  </Link>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>

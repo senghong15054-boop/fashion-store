@@ -1,5 +1,11 @@
+import axios from "axios";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+export const apiClient = axios.create({
+  baseURL: API_URL
+});
 
 export const buildAssetUrl = (path) => {
   if (!path) return "";
@@ -8,14 +14,18 @@ export const buildAssetUrl = (path) => {
 };
 
 export async function apiFetch(endpoint, options = {}) {
-  const response = await fetch(`${API_URL}${endpoint}`, options);
-  const data = await response.json().catch(() => ({}));
+  try {
+    const response = await apiClient.request({
+      url: endpoint,
+      method: options.method || "GET",
+      data: options.body,
+      headers: options.headers
+    });
 
-  if (!response.ok) {
-    throw new Error(data.message || "Request failed");
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Request failed");
   }
-
-  return data;
 }
 
 export { API_URL };
